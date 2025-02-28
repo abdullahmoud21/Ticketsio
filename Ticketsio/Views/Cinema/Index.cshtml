@@ -1,0 +1,94 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model List<Cinema>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cinemas - Ticketsio</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #141414;
+            color: #ffffff;
+        }
+
+        .cinema-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .cinema-card {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            width: 280px;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+            text-decoration: none;
+            overflow: hidden;
+        }
+
+            .cinema-card:hover {
+                transform: scale(1.05);
+                box-shadow: 0px 5px 15px rgba(46, 125, 224, 0.6);
+            }
+
+        .cinema-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+
+        .cinema-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .cinema-description {
+            font-size: 14px;
+            opacity: 0.9;
+            margin: 8px 0;
+        }
+
+        .cinema-address {
+            font-size: 12px;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mt-4 text-center">
+        <h2 class="mb-4">Available Cinemas</h2>
+
+        <div class="cinema-container">
+            @foreach (var cinema in Model)
+            {
+                <a asp-controller="Movie" asp-action="ViewByCinema" asp-route-cinemaId="@cinema.Id" class="category-card text-decoration-none">
+                <div class="cinema-card">
+                    <img src="~/images/logo.png" alt="Cinema Logo" class="cinema-logo">
+                    <div class="cinema-name">@cinema.Name</div>
+                    <div class="cinema-description">@cinema.Description</div>
+                    <div class="cinema-address">@cinema.Address</div>
+                </div>
+                </a>
+            }
+        </div>
+    </div>
+
+</body>
+</html>
