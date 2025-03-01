@@ -33,7 +33,7 @@
 
         .movie-card img {
         width: 100%;
-        height: 250px;
+        height: auto;
         object-fit: cover;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
@@ -51,20 +51,7 @@
         font-weight: bold;
         }
 
-        .btn-danger {
-        background-color: red;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 5px;
-        font-size: 16px;
-        text-decoration: none;
-        display: inline-block;
-        width: 100%;
-        }
-
-        .btn-danger:hover {
-        background-color: darkred;
-        }
+        
     </style>
 </head>
 <body>
@@ -88,7 +75,7 @@
                             <p class="card-text"><strong>Start Date:</strong> @movie.StartDate</p>
                             <p class="card-text"><strong>End Date:</strong> @movie.EndDate</p>
 
-                            <a href="#" class="btn btn-danger mt-2">Book Now</a>
+                            <partial name="_BookTicketButton" model="movie" />
                             <a asp-controller="Movie" asp-action="Details" asp-route-movieId="@movie.Id" class="btn btn-secondary mt-2">More Details</a>
                         </div>
                     </div>
