@@ -2,6 +2,7 @@
 using System;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Ticketsio.Data;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Ticketsio.Models
 {
@@ -35,13 +36,24 @@ namespace Ticketsio.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         [ValidateNever]
-        public MovieStatus MovieStatus { get; set; }
-        [ValidateNever]
         public Cinema Cinema { get; set; }
         [ValidateNever]
         public Category Category { get; set; }
         public List<ActorMovie> ActorMovies { get; set; } = new List<ActorMovie>();
-
+        [ValidateNever]
+        public MovieStatus MovieStatus
+        {
+            get
+            {
+                var now = DateTime.Now;
+                if (now < StartDate)
+                    return MovieStatus.UpComing;
+                else if (now >= StartDate && now <= EndDate)
+                    return MovieStatus.Available;
+                else return MovieStatus.Expired;
+            }
+        }
     }
 }
+
 

@@ -2,6 +2,7 @@
 using Ticketsio.Models;
 using Ticketsio.Repository.IRepositories;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Ticketsio.Controllers
 {
@@ -18,7 +19,11 @@ namespace Ticketsio.Controllers
         {
             var movies = movieRepository.Get(includes: new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
             ViewData["Movies"] = movies.ToList();
-            return View();
+            if (movies != null && movies.Count() >= 1)
+            {
+                return View();
+            }
+            return View("NotFound");
         }
         public IActionResult Details(int movieId)
         {
@@ -34,17 +39,29 @@ namespace Ticketsio.Controllers
 
 
             ViewBag.Actors = actors.ToList();
+            if (movie != null)
+            {
                 return View(movie);
+            }
+            return View("NotFound");
         }
         public IActionResult ViewByCategory(int categoryId)
         {
-            var movies = movieRepository.Get(e => e.Category.Id == categoryId , new Expression<Func<Movie, object>>[] {e => e.Category , e => e.Cinema});
-            return View(movies.ToList());
+            var movies = movieRepository.Get(e => e.Category.Id == categoryId, new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
+            if (movies != null && movies.Count() >= 1)
+            {   
+                return View(movies.ToList());
+            }
+            return View("NotFound");
         }
         public IActionResult ViewByCinema(int cinemaId)
         {
             var movies = movieRepository.Get(e => e.Cinema.Id == cinemaId, new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
-            return View(movies.ToList());
+            if (movies != null && movies.Count() >= 1)
+            {
+                return View(movies.ToList());
+            }
+            return View("NotFound");
         }
     }
 }

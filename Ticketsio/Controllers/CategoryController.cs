@@ -14,7 +14,11 @@ namespace Ticketsio.Controllers
         public IActionResult Index()
         {
             var categories = categoryRepository.Get();
-            return View(categories.ToList());
+            if (categories != null && categories.Count() >= 1)
+            {
+                return View(categories.ToList());
+            }
+            return View("NotFound");
         }
     }
 }

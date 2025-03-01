@@ -14,7 +14,11 @@ namespace Ticketsio.Controllers
         public IActionResult Index()
         {
             var Cinemas = cinemaRepository.Get();
-            return View(Cinemas.ToList());
+            if (Cinemas != null && Cinemas.Count() >= 1)
+            {
+                return View(Cinemas.ToList());
+            }
+            return View("NotFound");
         }
     }
 }
