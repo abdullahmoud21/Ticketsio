@@ -63,5 +63,14 @@ namespace Ticketsio.Controllers
             }
             return View("NotFound");
         }
+        public IActionResult Search(string searchtext)
+        {
+            var movies = movieRepository.Get(e => e.Name.Contains(searchtext), new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
+            if (movies != null && movies.Count() >= 1)
+            {
+                return View(movies);
+            }
+            return View("NotFound");
+        }
     }
 }
