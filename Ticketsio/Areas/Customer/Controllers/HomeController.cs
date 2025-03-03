@@ -4,10 +4,10 @@ using Ticketsio.Models;
 using Microsoft.EntityFrameworkCore;
 using Ticketsio.DataAccess;
 
-namespace Ticketsio.Controllers
+namespace Ticketsio.Areas.Customer.Controllers
 {
-    
-         public class HomeController : Controller
+    [Area("Customer")]
+    public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         public HomeController(ILogger<HomeController> logger)

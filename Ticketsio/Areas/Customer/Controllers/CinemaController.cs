@@ -2,8 +2,9 @@
 using Ticketsio.Repository;
 using Ticketsio.Repository.IRepositories;
 
-namespace Ticketsio.Controllers
+namespace Ticketsio.Areas.Customer.Controllers
 {
+    [Area("Customer")]
     public class CinemaController : Controller
     {
         private readonly ICinemaRepository cinemaRepository;
