@@ -18,10 +18,9 @@ namespace Ticketsio.Controllers
         public IActionResult ViewMovies()
         {
             var movies = movieRepository.Get(includes: new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
-            ViewData["Movies"] = movies.ToList();
             if (movies != null && movies.Count() >= 1)
             {
-                return View();
+                return View(movies);
             }
             return View("NotFound");
         }
@@ -60,6 +59,15 @@ namespace Ticketsio.Controllers
             if (movies != null && movies.Count() >= 1)
             {
                 return View(movies.ToList());
+            }
+            return View("NotFound");
+        }
+        public IActionResult Search(string searchtext)
+        {
+            var movies = movieRepository.Get(e => e.Name.Contains(searchtext), new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
+            if (movies != null && movies.Count() >= 1)
+            {
+                return View(movies);
             }
             return View("NotFound");
         }
