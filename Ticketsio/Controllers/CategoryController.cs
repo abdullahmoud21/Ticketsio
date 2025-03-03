@@ -2,13 +2,12 @@
 using Ticketsio.Repository;
 using Ticketsio.Repository.IRepositories;
 
-namespace Ticketsio.Areas.User.Controllers
+namespace Ticketsio.Controllers
 {
-    [Area("User")]
     public class CategoryController : Controller
     {
         private readonly ICategoryRepository categoryRepository;
-        public CategoryController(ICategoryRepository categoryRepository)
+    public CategoryController(ICategoryRepository categoryRepository)
         {
             this.categoryRepository = categoryRepository;
         }
