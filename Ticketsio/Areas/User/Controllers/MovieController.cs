@@ -4,8 +4,9 @@ using Ticketsio.Repository.IRepositories;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Ticketsio.Controllers
+namespace Ticketsio.Areas.User.Controllers
 {
+    [Area("User")]
     public class MovieController : Controller
     {
         private readonly IMovieRepository movieRepository;
@@ -27,7 +28,7 @@ namespace Ticketsio.Controllers
         }
         public IActionResult Details(int movieId)
         {
-            var movie = movieRepository.GetOne( e => e.Id == movieId, new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
+            var movie = movieRepository.GetOne(e => e.Id == movieId, new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
             var actors = actorRepository.Get(
         e => e.ActorMovies.Any(am => am.MoviesId == movieId),
         new Expression<Func<Actors, object>>[]
@@ -49,7 +50,7 @@ namespace Ticketsio.Controllers
         {
             var movies = movieRepository.Get(e => e.Category.Id == categoryId, new Expression<Func<Movie, object>>[] { e => e.Category, e => e.Cinema });
             if (movies != null && movies.Count() >= 1)
-            {   
+            {
                 return View(movies.ToList());
             }
             return View("NotFound");
