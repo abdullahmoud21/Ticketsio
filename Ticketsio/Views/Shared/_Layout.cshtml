@@ -11,6 +11,7 @@
 
         .navbar {
             background-color: #e50914 !important;
+            padding: 10px 20px;
         }
 
         .navbar-nav .nav-link {
@@ -26,18 +27,35 @@
         .search-bar {
             flex-grow: 1;
             max-width: 400px;
+            display: flex;
+            align-items: center;
         }
 
         .form-control {
-            border-radius: 20px;
+            border-radius: 20px 0 0 20px;
             border: none;
             padding: 10px 15px;
             transition: 0.3s;
+            background-color: #222;
+            color: white;
         }
 
             .form-control:focus {
                 box-shadow: 0 0 10px #ffc107;
                 outline: none;
+            }
+
+        .search-btn {
+            border-radius: 0 20px 20px 0;
+            background-color: #ffc107;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .search-btn:hover {
+                background-color: #e0a800;
             }
 
         .card {
@@ -67,6 +85,9 @@
 
             <form asp-controller="Movie" asp-action="Search" class="d-flex search-bar mx-3">
                 <input name="searchtext" id="searchtext" class="form-control" type="search" placeholder="Search movies..." aria-label="Search">
+                <button type="submit" class="search-btn">
+                    🔍
+                </button>
             </form>
 
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
