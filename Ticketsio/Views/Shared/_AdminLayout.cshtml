@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Admin Panel";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="bg-dark text-white vh-100 p-3" style="width: 250px;">
+            <h2 class="text-center">🎟️Ticketsio Admin Panel</h2>
+            <ul class="nav flex-column mt-4">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">📊 Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">🎬 Movies</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">📅 Showtimes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">👥 Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="#">📈 Reports</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <button class="btn btn-secondary dropdown-toggle w-100" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        🎭 Models
+                    </button>
+                    <ul class="dropdown-menu w-100">
+                        <li><a class="dropdown-item" href="/admin/cinema">🎦 Cinema</a></li>
+                        <li><a class="dropdown-item" href="/admin/category">📂 Category</a></li>
+                        <li><a class="dropdown-item" href="/admin/movie">🎥 Movie</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-grow-1 p-4">
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
