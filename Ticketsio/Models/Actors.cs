@@ -26,5 +26,6 @@ namespace Ticketsio.Models
         [ValidateNever]
         public List<Movie> Movies { get; set; }
         public List<ActorMovie> ActorMovies { get; set; } = new List<ActorMovie>();
+        public string FullName => FirstName + " " + LastName;
     }
 }
