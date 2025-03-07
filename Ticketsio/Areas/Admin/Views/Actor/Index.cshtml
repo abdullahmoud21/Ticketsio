@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Ticketsio.Models.Actors>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="mb-4">Actors</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary mb-3">+ Create New</a>
+</p>
+
+<table class="table table-hover table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.FirstName)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.LastName)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.Bio)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.ProfilePicture)</th>
+            <th class="text-center">@Html.DisplayNameFor(model => model.News)</th>
+            <th class="text-center">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="align-middle text-center">@item.Id</td>
+                <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.FirstName)</td>
+                <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.LastName)</td>
+                <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.Bio)</td>
+                <td class="align-middle text-center">
+                    <img src="@item.ProfilePicture" alt="@item.FirstName @item.LastName" class="img-thumbnail" style="width: 50px; height: 50px;">
+                </td>
+                <td class="align-middle text-center">@Html.DisplayFor(modelItem => item.News)</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">✏️ Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">ℹ️ Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
+                       onclick="return confirmDelete('@item.FirstName @item.LastName');">🗑️ Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
