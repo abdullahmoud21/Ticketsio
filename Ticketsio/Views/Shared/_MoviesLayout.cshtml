@@ -51,7 +51,7 @@
                 <div class="col-md-4 col-lg-3 mb-4">
                     <div class="card movie-card position-relative">
                         <span class="movie-status badge">@movie.MovieStatus</span>
-                        <img src="~/images/movies/@movie.ImgUrl" class="card-img-top" alt="@movie.Name">
+                        <img src="@movie.ImgUrl" class="card-img-top" alt="@movie.Name">
                         <div class="card-body text-center">
                             <h5 class="card-title">@movie.Name</h5>
                             <p class="card-text"><strong>Category:</strong> @movie.Category.Name</p>

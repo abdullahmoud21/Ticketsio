@@ -52,6 +52,7 @@ namespace Ticketsio.Models
                     return MovieStatus.Available;
                 else return MovieStatus.Expired;
             }
+            set { }
         }
     }
 }
