@@ -18,7 +18,7 @@ namespace Ticketsio.DataAccess
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            optionsBuilder.UseSqlServer("Server =DESKTOP-GJ83PRV\\ABDULLAH; Database = Ticketsio511; User ID = myuser; Password = MySecurePassword; TrustServerCertificate = True;");
+            optionsBuilder.UseSqlServer("Server =.; Database = Ticketsio511; Integrated Security=True; TrustServerCertificate = True;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
