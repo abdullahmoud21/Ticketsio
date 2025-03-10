@@ -8,9 +8,11 @@ namespace Ticketsio.Areas.Admin.Controllers
     public class CinemaController : Controller
     {
         private readonly ICinemaRepository cinemaRepository;
-        public CinemaController(ICinemaRepository cinemaRepository)
+        private readonly IMovieRepository movieRepository;
+        public CinemaController(ICinemaRepository cinemaRepository, IMovieRepository movieRepository)
         {
             this.cinemaRepository = cinemaRepository;
+            this.movieRepository = movieRepository;
         }
         public IActionResult Index()
         {
@@ -41,9 +43,14 @@ namespace Ticketsio.Areas.Admin.Controllers
         public IActionResult Delete(int id)
         {
             var cinema = cinemaRepository.GetOne(e  => e.Id == id);
-            if(cinema != null)
+            var movieswithcinema = movieRepository.Get(e => e.Cinema.Id == id).ToList();
+            if (cinema != null)
             {
-            cinemaRepository.Delete(cinema);
+                if (movieswithcinema.Any())
+                { 
+                movieRepository.Delete(movieswithcinema);
+                }
+                cinemaRepository.Delete(cinema);
                 cinemaRepository.Commit();
                 return RedirectToAction("Index");
             }
