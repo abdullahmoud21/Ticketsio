@@ -1,0 +1,80 @@
+﻿@model Ticketsio.Models.ViewModels.RegisterVM
+
+@{
+    ViewData["Title"] = "Register";
+}
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg" style="max-width: 400px; background-color: #222; color: white; border-radius: 10px;">
+        <h2 class="text-center mb-3">Create an Account</h2>
+        <hr style="border-color: #e50914;" />
+
+        <form asp-action="Register">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label"></label>
+                <input asp-for="UserName" class="form-control" placeholder="Enter username"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" placeholder="Enter first name"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" placeholder="Enter last name"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" placeholder="Enter email"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" type="password" class="form-control" placeholder="Enter password"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm password"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-danger"
+                        style="background-color: #e50914; border: none; border-radius: 5px;">
+                    Create Account
+                </button>
+            </div>
+
+            <div class="text-center">
+                <span>Already have an account? <a asp-action="Login" class="text-warning">Sign In</a></span>
+                <br />
+                <a asp-area="Customer" asp-controller="Home" asp-action="Index" class="text-warning">Back to Home</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@* @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} *@

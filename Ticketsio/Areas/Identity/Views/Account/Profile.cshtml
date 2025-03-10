@@ -1,0 +1,59 @@
+﻿@model ApplicationUser
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card p-4 shadow-lg" style="max-width: 400px; background-color: #222; color: white; border-radius: 10px;">
+        <h2 class="text-center mb-3">Profile</h2>
+        <hr style="border-color: #e50914;" />
+
+        <form asp-area="Identity" asp-controller="Account" asp-action="Profile" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="UserName" class="form-label"></label>
+                <input asp-for="UserName" class="form-control" value="@Model.UserName" placeholder="Enter username"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label"></label>
+                <input asp-for="FirstName" class="form-control" value="@Model.FirstName" placeholder="Enter first name"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" value="@Model.LastName" placeholder="Enter last name"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" value="@Model.Email" class="form-control" placeholder="Enter email"
+                       style="background-color: #333; color: white; border-radius: 5px; border: 1px solid #555;" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-danger"
+                        style="background-color: #e50914; border: none; border-radius: 5px;">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+
+        <hr>
+        
+        <div class="text-center">
+            <a asp-area"Identity" asp-controller="Account" asp-action="ChangePassword" class="btn btn-warning" style="border-radius: 5px;">Change Password</a>
+        </div>
+    </div>
+</div>
+

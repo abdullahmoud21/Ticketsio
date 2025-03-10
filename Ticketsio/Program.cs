@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ticketsio.DataAccess;
+using Ticketsio.Models;
 using Ticketsio.Repository;
 using Ticketsio.Repository.IRepositories;
 
@@ -15,6 +17,10 @@ namespace Ticketsio
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(option => 
+            { option.SignIn.RequireConfirmedEmail = false; })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
             builder.Services.AddScoped<IActorRepository, ActorRepository>();
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();

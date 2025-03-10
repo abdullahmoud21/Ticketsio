@@ -73,6 +73,19 @@
                 background-color: #b20710;
             }
 
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            padding: 5px 15px;
+            text-align: left;
+            width: 100%;
+        }
+
+            .logout-btn:hover {
+                background-color: #f8d7da;
+            }
+
         footer {
             background-color: #111;
         }
@@ -104,6 +117,32 @@
                     <li class="nav-item">
                         <a class="nav-link" asp-controller="Cinema" asp-action="Index">Cinemas</a>
                     </li>
+
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                @User.Identity.Name
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" asp-area="Identity" asp-controller="Account" asp-action="Profile">Profile</a></li>
+                                <li>
+                                    <form asp-area="Identity" asp-controller="Account" asp-action="Logout" method="post">
+                                        <button type="submit" class="logout-btn">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-controller="Account" asp-action="Login" asp-action="Login">Sign In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-controller="Account" asp-action="Register" asp-action="Register">Sign Up</a>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
