@@ -96,7 +96,7 @@
         <div class="container">
             <a class="navbar-brand text-white" href="/">Ticketsio</a>
 
-            <form asp-controller="Movie" asp-action="Search" class="d-flex search-bar mx-3">
+            <form asp-area="Customer" asp-controller="Movie" asp-action="Search" class="d-flex search-bar mx-3">
                 <input name="searchtext" id="searchtext" class="form-control" type="search" placeholder="Search movies..." aria-label="Search">
                 <button type="submit" class="search-btn">
                     🔍
@@ -109,13 +109,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Movie" asp-action="ViewMovies">Home</a>
+                        <a class="nav-link" asp-area="Customer"  asp-controller="Movie" asp-action="ViewMovies">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Category" asp-action="Index">Categories</a>
+                        <a class="nav-link" asp-area="Customer"  asp-controller="Category" asp-action="Index">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-controller="Cinema" asp-action="Index">Cinemas</a>
+                        <a class="nav-link" asp-area="Customer"  asp-controller="Cinema" asp-action="Index">Cinemas</a>
                     </li>
 
                     @if (User.Identity.IsAuthenticated)
