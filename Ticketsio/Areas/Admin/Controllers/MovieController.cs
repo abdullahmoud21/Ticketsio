@@ -4,10 +4,12 @@ using Ticketsio.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ticketsio.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class MovieController : Controller
     {
         private readonly IMovieRepository movieRepository;
