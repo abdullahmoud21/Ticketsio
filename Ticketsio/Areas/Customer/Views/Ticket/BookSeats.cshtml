@@ -1,0 +1,60 @@
+﻿@model Ticketsio.Models.Movie
+@{
+    var seats = ViewBag.Seats as List<Ticketsio.Models.Seat>;
+}
+
+<h2 class="text-center mb-4">Select Your Seats for @Model.Name</h2>
+
+<form asp-action="ConfirmBooking" method="post">
+    <input type="hidden" name="MovieId" value="@Model.Id" />
+
+    <div class="seat-layout">
+        @foreach (var seat in seats)
+        {
+            <label class="seat @(seat.IsBooked ? "booked" : "available")">
+                <input type="checkbox" name="SelectedSeats" value="@seat.Id" @(seat.IsBooked ? "disabled" : "") />
+                @seat.SeatNumber
+            </label>
+        }
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Book Selected Seats</button>
+</form>
+
+<style>
+    .seat-layout {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 10px;
+        justify-content: center;
+        max-width: 400px;
+        margin: 0 auto;
+    }
+
+    .seat {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        background: #28a745;
+        color: white;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+    }
+
+        .seat input {
+            display: none;
+        }
+
+        .seat.booked {
+            background: #dc3545;
+            cursor: not-allowed;
+        }
+
+        .seat.available:hover {
+            background: #218838;
+        }
+</style>

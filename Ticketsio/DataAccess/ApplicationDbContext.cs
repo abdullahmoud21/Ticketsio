@@ -14,6 +14,7 @@ namespace Ticketsio.DataAccess
         public DbSet<Movie>? Movies { get; set; }
         public DbSet<ActorMovie>? ActorMovies { get; set; }
         public DbSet<Ticket>? Ticket { get; set; }
+        public DbSet<Seat>? Seats { get; set; }
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         { }
 
