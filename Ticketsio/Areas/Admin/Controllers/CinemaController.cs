@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Ticketsio.Models;
 using Ticketsio.Repository.IRepositories;
 
 namespace Ticketsio.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "SuperAdmin")]
     public class CinemaController : Controller
     {
         private readonly ICinemaRepository cinemaRepository;

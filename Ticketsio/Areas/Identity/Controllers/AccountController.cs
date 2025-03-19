@@ -1,25 +1,42 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Ticketsio.Models;
 using Ticketsio.Models.ViewModels;
+using Ticketsio.Services;
+using System.Text.Encodings.Web;
 
 namespace Ticketsio.Areas.Identity.Controllers
 {
     [Area("Identity")]
     public class AccountController : Controller
     {
-        public readonly UserManager<ApplicationUser> userManager;
-        private readonly SignInManager<ApplicationUser> signInManager;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
+
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+            RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
         {
-            this.userManager = userManager;
-            this.signInManager = signInManager;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _roleManager = roleManager;
+            _emailSender = emailSender;
         }
+
         [HttpGet]
-        public IActionResult Register()
+        public async Task<IActionResult> Register()
         {
+            if (_roleManager.Roles.IsNullOrEmpty())
+            {
+                await _roleManager.CreateAsync(new IdentityRole("SuperAdmin"));
+                await _roleManager.CreateAsync(new IdentityRole("Admin"));
+                await _roleManager.CreateAsync(new IdentityRole("User"));
+            }
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterVM registerVM)
@@ -31,111 +48,96 @@ namespace Ticketsio.Areas.Identity.Controllers
                     UserName = registerVM.UserName,
                     Email = registerVM.Email,
                     FirstName = registerVM.FirstName,
-                    LastName = registerVM.LastName,
-                    PasswordHash = registerVM.Password
+                    LastName = registerVM.LastName
                 };
-                var result = await userManager.CreateAsync(applicationUser, registerVM.Password);
+
+                var result = await _userManager.CreateAsync(applicationUser, registerVM.Password);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home", new { area = "Customer" });
+                    
+                    await _userManager.AddToRoleAsync(applicationUser, "User");
+
+                    
+                    var token = await _userManager.GenerateEmailConfirmationTokenAsync(applicationUser);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new
+                    {
+                        userId = applicationUser.Id,
+                        token = token
+                    }, Request.Scheme);
+
+                    
+                    await _emailSender.SendEmailAsync(applicationUser.Email, "Confirm Your Email",
+                        $"Please confirm your account by clicking this link: <a href='{HtmlEncoder.Default.Encode(confirmationLink)}'>Confirm Email</a>");
+
+                    TempData["Message"] = "Registration successful! Please check your email to confirm your account.";
+                    return RedirectToAction("Login");
                 }
-                else
+
+                foreach (var error in result.Errors)
                 {
-                    ModelState.AddModelError("Password", "Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character");
+                    ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
             return View(registerVM);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+                return BadRequest("Invalid confirmation request.");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return NotFound("User not found.");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                TempData["Message"] = "Email confirmed successfully! You can now log in.";
+                return RedirectToAction("Login");
+            }
+
+            return BadRequest("Email confirmation failed.");
+        }
+
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginVM loginVM)
         {
             if (ModelState.IsValid)
             {
-                var appuser = await userManager.FindByEmailAsync(loginVM.Email);
-
-                if (appuser != null)
+                var appUser = await _userManager.FindByEmailAsync(loginVM.Email);
+                if (appUser != null)
                 {
-                    var result = await userManager.CheckPasswordAsync(appuser, loginVM.Password);
-                    if (result)
+                    if (!await _userManager.IsEmailConfirmedAsync(appUser))
                     {
-                        await signInManager.SignInAsync(appuser, loginVM.RememberMe);
-                        return RedirectToAction("Index", "Home", new { area = "Customer" });
+                        ModelState.AddModelError(string.Empty, "You must confirm your email before logging in.");
+                        return View(loginVM);
                     }
-                    else
-                    {
-                        ModelState.AddModelError("Email", "Invalid Email");
-                        ModelState.AddModelError("Password", "Invalid Password");
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("Email", "Invalid Email");
-                    ModelState.AddModelError("Password", "Invalid Password");
-                }
-            }
-            return View(loginVM);
-        }
-        public IActionResult Logout()
-        {
-            signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home", new { area = "Customer" });
-        }
-        [HttpGet]
-        public IActionResult Profile()
-        {
-            var account = userManager.GetUserAsync(User).Result;
-            return View(account);
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Profile(ApplicationUser applicationUser)
-        {
-            var account = userManager.GetUserAsync(User).Result;
-            account.FirstName = applicationUser.FirstName;
-            account.LastName = applicationUser.LastName;
-            account.Email = applicationUser.Email;
-            account.UserName = applicationUser.UserName;
-           var success = userManager.UpdateAsync(account);
-            if (success.Result.Succeeded)
-            {
-                return RedirectToAction("Index", "Home", new { area = "Customer" });
-            }
-            return View(account);
-        }
-        [HttpGet]
-        public IActionResult ChangePassword()
-        {
-            return View();
-        }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ChangePassword(ForgotPasswordVM forgotPasswordVM)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await userManager.GetUserAsync(User);
-                if (forgotPasswordVM.Email == user.Email)
-                {
-                    var result = await userManager.ChangePasswordAsync(user, forgotPasswordVM.OldPassword, forgotPasswordVM.NewPassword);
 
+                    var result = await _signInManager.PasswordSignInAsync(appUser, loginVM.Password, loginVM.RememberMe, false);
                     if (result.Succeeded)
                     {
                         return RedirectToAction("Index", "Home", new { area = "Customer" });
                     }
-                    else
-                    {
-                        ModelState.AddModelError("OldPassword", "Invalid Password");
-                        ModelState.AddModelError("NewPassword", "Password must be at least 8 characters long and contain an uppercase letter, a lowercase letter, a number, and a special character");
-                    }
                 }
+
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
-            return View(forgotPasswordVM);
+            return View(loginVM);
+        }
+
+        public async Task<IActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home", new { area = "Customer" });
         }
     }
 }
