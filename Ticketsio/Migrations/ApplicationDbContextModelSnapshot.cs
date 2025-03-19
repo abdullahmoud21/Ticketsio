@@ -167,7 +167,7 @@ namespace Ticketsio.Migrations
 
                     b.HasIndex("ActorsId");
 
-                    b.ToTable("ActorMovies");
+                    b.ToTable("ActorMovies", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Actors", b =>
@@ -202,7 +202,7 @@ namespace Ticketsio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Actors");
+                    b.ToTable("Actors", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.ApplicationUser", b =>
@@ -293,7 +293,7 @@ namespace Ticketsio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Cinema", b =>
@@ -324,7 +324,7 @@ namespace Ticketsio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cinemas");
+                    b.ToTable("Cinemas", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Movie", b =>
@@ -382,7 +382,7 @@ namespace Ticketsio.Migrations
 
                     b.HasIndex("CinemaId");
 
-                    b.ToTable("Movies");
+                    b.ToTable("Movies", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Seat", b =>
@@ -407,7 +407,7 @@ namespace Ticketsio.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("Seats");
+                    b.ToTable("Seats", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Ticket", b =>
@@ -455,7 +455,7 @@ namespace Ticketsio.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ticket");
+                    b.ToTable("Ticket", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.ViewModels.LoginVM", b =>
@@ -479,7 +479,7 @@ namespace Ticketsio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("LoginVM");
+                    b.ToTable("LoginVM", (string)null);
                 });
 
             modelBuilder.Entity("Ticketsio.Models.ViewModels.RegisterVM", b =>
@@ -514,7 +514,7 @@ namespace Ticketsio.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RegisterVM");
+                    b.ToTable("RegisterVM", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

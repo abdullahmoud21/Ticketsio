@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
+using Ticketsio.Repository;
 
 namespace Ticketsio.Areas.Admin.Controllers
 {
@@ -16,12 +17,14 @@ namespace Ticketsio.Areas.Admin.Controllers
         private readonly ICinemaRepository cinemaRepository;
         private readonly IActorRepository actorRepository;
         private readonly ICategoryRepository categoryRepository;
-        public MovieController(IMovieRepository movieRepository, ICategoryRepository categoryRepository, ICinemaRepository cinemaRepository , IActorRepository actorRepository)
+        private readonly ISeatRepository _seatRepository;
+        public MovieController(ISeatRepository seatRepository,IMovieRepository movieRepository, ICategoryRepository categoryRepository, ICinemaRepository cinemaRepository , IActorRepository actorRepository)
         {
             this.movieRepository = movieRepository;
             this.categoryRepository = categoryRepository;
             this.actorRepository = actorRepository;
             this.cinemaRepository = cinemaRepository;
+            _seatRepository = seatRepository;
         }
         public IActionResult Index()
         {
@@ -55,6 +58,7 @@ namespace Ticketsio.Areas.Admin.Controllers
                 movie.MovieStatus = default;
                 movieRepository.Create(movie);
                 movieRepository.Commit();
+                GenerateSeatsForMovie(movie.Id, movie.Cinema.Id);
                 return RedirectToAction("Index");
             }
 
@@ -113,6 +117,28 @@ namespace Ticketsio.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
             return View(movie);
+        }
+        private void GenerateSeatsForMovie(int movieId, int cinemaId)
+        {
+            List<Seat> seats = new List<Seat>();
+            string[] rows = { "A", "B", "C", "D", "E" };
+            int seatsPerRow = 8;
+
+            foreach (var row in rows)
+            {
+                for (int i = 1; i <= seatsPerRow; i++)
+                {
+                    seats.Add(new Seat
+                    {
+                        MovieId = movieId,
+                        SeatNumber = $"{row}{i}",
+                        IsBooked = false
+                    });
+                }
+            }
+
+            _seatRepository.Create(seats);
+            _seatRepository.Commit();
         }
     }
 }
