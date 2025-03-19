@@ -9,14 +9,24 @@
     <input type="hidden" name="MovieId" value="@Model.Id" />
 
     <div class="seat-layout">
-        @foreach (var seat in seats)
+        @if (seats == null)
         {
-            <label class="seat @(seat.IsBooked ? "booked" : "available")">
-                <input type="checkbox" name="SelectedSeats" value="@seat.Id" @(seat.IsBooked ? "disabled" : "") />
-                @seat.SeatNumber
-            </label>
+            <p style="color: red;">Seats data is missing!</p>
         }
-    </div>
+        else if (!seats.Any())
+        {
+            <p>No seats available for this movie.</p>
+        }
+        else
+        {
+            <h3>Available Seats</h3>
+            <ul>
+                @foreach (var seat in seats)
+                {
+                    <li>@seat.SeatNumber</li>
+                }
+            </ul>
+        }
 
     <button type="submit" class="btn btn-primary mt-3">Book Selected Seats</button>
 </form>
