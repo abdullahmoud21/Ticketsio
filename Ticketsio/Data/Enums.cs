@@ -6,4 +6,10 @@
         Available,
         Expired
     }
+    public enum TicketStatus
+    {
+        Paid,
+        Canceled,
+        Refunded
+    }
 }
