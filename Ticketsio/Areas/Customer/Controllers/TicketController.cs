@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq.Expressions;
+using Ticketsio.Models;
 using Ticketsio.Repository;
 using Ticketsio.Repository.IRepositories;
 
@@ -21,7 +23,7 @@ namespace Ticketsio.Areas.Customer.Controllers
         public IActionResult BookSeats(int MovieId)
         {
             var Movie = _movieRepository.GetOne(e => e.Id == MovieId);
-            var Seats = _seatRepository.Get(e => e.MovieId == MovieId);
+            var Seats = _seatRepository.Get(e => e.MovieId == MovieId, includes: new Expression<Func<Seat, object>>[] {e => e.Movie });
             ViewBag.Movie = Movie;
             ViewBag.Seats = Seats;
             return View();
