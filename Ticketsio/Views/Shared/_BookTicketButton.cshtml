@@ -32,7 +32,7 @@
 {
     @if (User.Identity.IsAuthenticated)
     {
-        <a asp-area="Customer" asp-controller="Ticket" asp-action="BookSeats"  class="btn btn-danger mt-2">Book Now</a>
+        <a asp-area="Customer" asp-controller="Ticket" asp-action="BookSeats" asp-route-MovieId="@Model.Id" class="btn btn-danger mt-2">Book Now</a>
     }
     else
     {

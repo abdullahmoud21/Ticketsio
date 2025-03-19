@@ -23,9 +23,9 @@ namespace Ticketsio.Areas.Customer.Controllers
         public IActionResult BookSeats(int MovieId)
         {
             var Movie = _movieRepository.GetOne(e => e.Id == MovieId);
-            var Seats = _seatRepository.Get(e => e.MovieId == MovieId, includes: new Expression<Func<Seat, object>>[] {e => e.Movie });
+            var Seats = _seatRepository.Get(e => e.MovieId == MovieId);
             ViewBag.Movie = Movie;
-            ViewBag.Seats = Seats;
+            ViewBag.Seats = Seats.ToList();
             return View();
         }
 
