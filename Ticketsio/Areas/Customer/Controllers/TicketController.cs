@@ -23,14 +23,10 @@ namespace Ticketsio.Areas.Customer.Controllers
         [HttpGet]
         public IActionResult BookSeats(int MovieId)
         {
-            var Movie = _movieRepository.GetOne(e => e.Id == MovieId);
-            if(Movie == null)
-            {
-                return NotFound();
-            }
-            var Seats = _seatRepository.Get(e => e.MovieId == MovieId);
-            ViewBag.Movie = Movie;
+            var movie = _movieRepository.GetOne(e => e.Id == MovieId);
+            var Seats = _seatRepository.Get(e => e.MovieId == MovieId,includes: new Expression<Func<Seat, object>>[] { e => e.Movie} );
             ViewData["Seats"] = Seats.ToList();
+            ViewData["Movie"] = movie;
             return View();
         }
 

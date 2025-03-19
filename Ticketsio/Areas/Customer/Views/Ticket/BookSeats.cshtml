@@ -1,12 +1,14 @@
-﻿@model Ticketsio.Models.Movie
+﻿@{
+    var movie = ViewData["Movie"] as Ticketsio.Models.Movie;
+}
 @{
     var seats = ViewData["Seats"] as List<Ticketsio.Models.Seat>;
 }
 
-<h2 class="text-center mb-4">Select Your Seats for @Model.Name</h2>
+<h2 class="text-center mb-4">Select Your Seats for @movie.Name</h2>
 
 <form asp-action="ConfirmBooking" method="post">
-    <input type="hidden" name="MovieId" value="@Model.Id" />
+    <input type="hidden" name="MovieId" value="@movie.Id" />
 
     <div class="seat-layout">
         @if (seats == null)
