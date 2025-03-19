@@ -22,12 +22,16 @@
         else
         {
             <h3>Available Seats</h3>
-            <ul>
+            <div class="seat-layout">
                 @foreach (var seat in seats)
                 {
-                    <li>@seat.SeatNumber</li>
+                    <label class="seat @(seat.IsBooked ? "booked" : "available")">
+                        <input type="checkbox" name="SelectedSeats" value="@seat.Id" @(seat.IsBooked ? "disabled" : "") />
+                        @seat.SeatNumber
+                    </label>
                 }
-            </ul>
+            </div>
+
         }
 
     <button type="submit" class="btn btn-primary mt-3">Book Selected Seats</button>
