@@ -1,7 +1,5 @@
 ﻿@{
     var movie = ViewData["Movie"] as Ticketsio.Models.Movie;
-}
-@{
     var seats = ViewData["Seats"] as List<Ticketsio.Models.Seat>;
 }
 
@@ -11,65 +9,82 @@
     <input type="hidden" name="MovieId" value="@movie.Id" />
 
     <div class="seat-layout">
-        @if (seats == null)
+        @if (seats == null || !seats.Any())
         {
-            <p style="color: red;">Seats data is missing!</p>
-        }
-        else if (!seats.Any())
-        {
-            <p>No seats available for this movie.</p>
+            <p style="color: red;">No seats available for this movie.</p>
         }
         else
         {
-            <h3>Available Seats</h3>
-            <div class="seat-layout">
-                @foreach (var seat in seats)
-                {
-                    <label class="seat @(seat.IsBooked ? "booked" : "available")">
-                        <input type="checkbox" name="SelectedSeats" value="@seat.Id" @(seat.IsBooked ? "disabled" : "") />
-                        @seat.SeatNumber
-                    </label>
-                }
-            </div>
-
+            @foreach (var seat in seats)
+            {
+                <div class="seat @(seat.IsBooked ? "booked" : "available")" data-seat-id="@seat.Id" onclick="toggleSeat(this)">
+                    @seat.SeatNumber
+                    <input type="checkbox" name="SelectedSeats" value="@seat.Id" hidden />
+                </div>
+            }
         }
+    </div>
+
+    <input type="hidden" id="selectedSeatsInput" name="SelectedSeatsList" />
 
     <button type="submit" class="btn btn-primary mt-3">Book Selected Seats</button>
 </form>
+
 <style>
-.seat-layout {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 10px;
-    justify-content: center;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.seat {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    background: #28a745;
-    color: white;
-    border-radius: 5px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-}
-
-    .seat input {
-        display: none;
+    .seat-layout {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 10px;
+        justify-content: center;
+        max-width: 400px;
+        margin: 0 auto;
     }
 
-    .seat.booked {
-        background: #dc3545;
-        cursor: not-allowed;
+    .seat {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        background: #28a745;
+        color: white;
+        border-radius: 5px;
+        text-align: center;
+        cursor: pointer;
+        user-select: none;
+        transition: background 0.3s;
     }
 
-    .seat.available:hover {
-        background: #218838;
-    }
+        .seat.booked {
+            background: #dc3545;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .seat.selected {
+            background: #ffcc00;
+            color: black;
+            font-weight: bold;
+        }
 </style>
+
+<script>
+    function toggleSeat(element) {
+        if (!element.classList.contains("booked")) {
+            element.classList.toggle("selected");
+
+            let seatId = element.getAttribute("data-seat-id");
+            let selectedSeatsInput = document.getElementById("selectedSeatsInput");
+
+            let selectedSeats = selectedSeatsInput.value ? selectedSeatsInput.value.split(",") : [];
+
+            if (element.classList.contains("selected")) {
+                selectedSeats.push(seatId);
+            } else {
+                selectedSeats = selectedSeats.filter(id => id !== seatId);
+            }
+
+            selectedSeatsInput.value = selectedSeats.join(",");
+        }
+    }
+</script>
