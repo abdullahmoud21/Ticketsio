@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Mono.TextTemplating;
 using System.Linq.Expressions;
 using Ticketsio.Models;
 using Ticketsio.Repository;
@@ -29,7 +30,7 @@ namespace Ticketsio.Areas.Customer.Controllers
             }
             var Seats = _seatRepository.Get(e => e.MovieId == MovieId);
             ViewBag.Movie = Movie;
-            ViewBag.Seats = Seats.ToList();
+            ViewData["Seats"] = Seats.ToList();
             return View();
         }
 
