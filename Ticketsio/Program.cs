@@ -27,6 +27,7 @@ namespace Ticketsio
             builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
             builder.Services.AddScoped<ICinemaRepository, CinemaRepository>();
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
+            builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
             var app = builder.Build();
             
