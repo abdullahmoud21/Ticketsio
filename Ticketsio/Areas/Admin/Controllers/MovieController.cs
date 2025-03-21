@@ -122,7 +122,7 @@ namespace Ticketsio.Areas.Admin.Controllers
         {
             List<Seat> seats = new List<Seat>();
             string[] rows = { "A", "B", "C", "D", "E" };
-            int seatsPerRow = 8;
+            int seatsPerRow = 9;
 
             foreach (var row in rows)
             {

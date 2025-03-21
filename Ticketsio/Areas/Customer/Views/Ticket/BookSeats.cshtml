@@ -1,11 +1,14 @@
 ﻿@{
     var movie = ViewData["Movie"] as Ticketsio.Models.Movie;
     var seats = ViewData["Seats"] as List<Ticketsio.Models.Seat>;
+
+    // Group seats by row letter (assuming SeatNumber format is like "A1", "B3", etc.)
+    var groupedSeats = seats?.GroupBy(s => s.SeatNumber[0]).OrderBy(g => g.Key);
 }
 
 <h2 class="text-center mb-4">Select Your Seats for @movie.Name</h2>
 
-<form asp-action="ConfirmBooking" method="post">
+<form asp-area="Customer" asp-controller="Ticket" asp-action="BookSeats" method="post">
     <input type="hidden" name="MovieId" value="@movie.Id" />
 
     <div class="seat-layout">
@@ -15,11 +18,17 @@
         }
         else
         {
-            @foreach (var seat in seats)
+            @foreach (var row in groupedSeats)
             {
-                <div class="seat @(seat.IsBooked ? "booked" : "available")" data-seat-id="@seat.Id" onclick="toggleSeat(this)">
-                    @seat.SeatNumber
-                    <input type="checkbox" name="SelectedSeats" value="@seat.Id" hidden />
+                <div class="seat-row">
+                    <span class="row-label">@row.Key</span> <!-- Display Row Letter -->
+                    @foreach (var seat in row.OrderBy(s => int.Parse(s.SeatNumber.Substring(1))))
+                    {
+                        <div class="seat @(seat.IsBooked ? "booked" : "available")" data-seat-id="@seat.Id" onclick="toggleSeat(this)">
+                            @seat.SeatNumber
+                            <input type="checkbox" name="SelectedSeats" value="@seat.Id" hidden />
+                        </div>
+                    }
                 </div>
             }
         }
@@ -32,12 +41,24 @@
 
 <style>
     .seat-layout {
-        display: grid;
-        grid-template-columns: repeat(8, 1fr);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         gap: 10px;
-        justify-content: center;
-        max-width: 400px;
+        max-width: 600px;
         margin: 0 auto;
+    }
+
+    .seat-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .row-label {
+        font-weight: bold;
+        font-size: 18px;
+        margin-right: 10px;
     }
 
     .seat {

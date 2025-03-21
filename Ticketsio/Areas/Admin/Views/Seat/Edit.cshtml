@@ -1,0 +1,111 @@
+﻿@model Ticketsio.Models.Seat
+
+@{
+    ViewData["Title"] = "Edit Seat";
+}
+
+<h1>Edit Seat</h1>
+<h4>Modify seat details below</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="editSeatForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" id="seatId" />
+
+            <!-- Seat Number -->
+            <div class="form-group">
+                <label asp-for="SeatNumber" class="control-label"></label>
+                <input asp-for="SeatNumber" class="form-control" id="seatNumber" />
+                <span asp-validation-for="SeatNumber" class="text-danger"></span>
+            </div>
+
+            <!-- Booking Status Toggle -->
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" id="isBookedToggle" @(Model.IsBooked ? "checked" : "") />
+                    <span id="bookingStatus">@((Model.IsBooked) ? "Booked 🔴" : "Available ✅")</span>
+                </label>
+            </div>
+
+            <!-- Movie Selection -->
+            <div class="form-group">
+                <label asp-for="MovieId" class="control-label"></label>
+                <select asp-for="MovieId" class="form-control" asp-items="ViewBag.Movies" id="movieSelect"></select>
+                <span asp-validation-for="MovieId" class="text-danger"></span>
+            </div>
+
+            <!-- Save Button (AJAX) -->
+            <div class="form-group mt-3">
+                <button type="button" class="btn btn-success" id="saveChangesBtn">💾 Save Changes</button>
+                <a asp-action="Index" class="btn btn-secondary">🔙 Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let seatId = document.getElementById("seatId").value;
+            let seatNumberInput = document.getElementById("seatNumber");
+            let movieSelect = document.getElementById("movieSelect");
+            let isBookedToggle = document.getElementById("isBookedToggle");
+            let bookingStatus = document.getElementById("bookingStatus");
+            let saveBtn = document.getElementById("saveChangesBtn");
+
+            // Toggle Booking Status
+            isBookedToggle.addEventListener("change", function () {
+                if (this.checked) {
+                    bookingStatus.textContent = "Booked 🔴";
+                } else {
+                    bookingStatus.textContent = "Available ✅";
+                }
+            });
+
+            // AJAX Save Changes
+            saveBtn.addEventListener("click", function () {
+                let updatedSeat = {
+                    Id: seatId,
+                    SeatNumber: seatNumberInput.value,
+                    IsBooked: isBookedToggle.checked,
+                    MovieId: movieSelect.value
+                };
+
+                   fetch("/api/Seat/Edit", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']").value
+        },
+        body: JSON.stringify(updatedSeat)
+    })
+
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        saveBtn.textContent = "✅ Saved!";
+                        saveBtn.classList.remove("btn-success");
+                        saveBtn.classList.add("btn-primary");
+
+                        // Highlight the updated seat
+                        document.querySelector(".col-md-6").classList.add("edited-seat");
+                        setTimeout(() => {
+                            document.querySelector(".col-md-6").classList.remove("edited-seat");
+                        }, 2000);
+                    } else {
+                        alert("❌ Error saving changes.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+            });
+        });
+    </script>
+
+    <style>
+        .edited-seat {
+            background-color: #c8e6c9; /* Light green */
+            transition: background-color 2s ease-in-out;
+        }
+    </style>

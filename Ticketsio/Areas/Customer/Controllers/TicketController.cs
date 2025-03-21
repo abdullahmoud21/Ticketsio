@@ -29,6 +29,22 @@ namespace Ticketsio.Areas.Customer.Controllers
             ViewData["Movie"] = movie;
             return View();
         }
+        [HttpPost]
+        public IActionResult BookSeats(int MovieId, string[] SelectedSeatsList)
+        {
+            var movie = _movieRepository.GetOne(e => e.Id == MovieId);
+            var Seats = _seatRepository.Get(e => e.MovieId == MovieId, includes: new Expression<Func<Seat, object>>[] { e => e.Movie });
+            foreach(var Seat in Seats)
+            {
+                if (SelectedSeatsList.Contains(Seat.SeatNumber))
+                {
+                    Seat.IsBooked = true;
+                    _seatRepository.Edit(Seat);
+                }
+            }
+            _seatRepository.Commit();
+            return View();
+        }
 
     }
 }

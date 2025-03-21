@@ -1,0 +1,160 @@
+﻿@model IEnumerable<Ticketsio.Models.Seat>
+
+@{
+    ViewData["Title"] = "Seats";
+}
+
+<h1 class="mb-4 text-center">🎟️ Seats List</h1>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Filter Form -->
+    <form method="get" class="d-flex align-items-center">
+        <label for="MovieId" class="me-2 fw-bold">Filter by Movie:</label>
+        <select name="MovieId" class="form-select me-2" onchange="this.form.submit()">
+            <option value="">-- All Movies --</option>
+            @foreach (var movie in ViewBag.Movies)
+            {
+                <option value="@movie.Id" selected="@(ViewBag.SelectedMovieId == movie.Id ? "selected" : null)">
+                    @movie.Name
+                </option>
+            }
+        </select>
+    </form>
+
+    <!-- Create Button -->
+    <a asp-action="Create" class="btn btn-primary">➕ Create New Seat</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-hover text-center align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th><input type="checkbox" id="selectAll" /></th>
+                <th>Seat Number</th>
+                <th>Movie</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seat in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" class="select-seat form-check-input" name="selectedSeats" value="@seat.Id" />
+                    </td>
+                    <td>
+                        <input type="text" class="form-control text-center" name="SeatNumber" value="@seat.SeatNumber" data-id="@seat.Id" />
+                    </td>
+                    <td>
+                        <select class="form-control" name="MovieId" data-id="@seat.Id">
+                            @foreach (var movie in ViewBag.Movies)
+                            {
+                                <option value="@movie.Id" selected="@(movie.Id == seat.MovieId ? "selected" : null)">
+                                    @movie.Name
+                                </option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="form-check-input seat-checkbox"
+                               name="IsBooked"
+                               value="true" @(seat.IsBooked ? "checked" : "") data-id="@seat.Id" />
+                        <span class="status-label ms-2 fw-bold">
+                            @(seat.IsBooked ? "Booked" : "Available")
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-success btn-sm edit-btn" data-id="@seat.Id">💾 Save</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Bulk Delete Form -->
+<form asp-area="Admin" asp-controller="Seat" asp-action="DeleteSelectedSeats" method="post" id="bulkDeleteForm">
+    <button type="submit" class="btn btn-danger mt-3">🗑️ Delete Selected</button>
+</form>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Toggle booking status label when checkbox is clicked
+        document.querySelectorAll(".seat-checkbox").forEach(checkbox => {
+            checkbox.addEventListener("change", function () {
+                let statusLabel = this.nextElementSibling;
+                statusLabel.textContent = this.checked ? "Booked" : "Available";
+            });
+        });
+
+        // Select All Checkbox functionality
+        const selectAllCheckbox = document.getElementById("selectAll");
+        const seatCheckboxes = document.querySelectorAll(".select-seat");
+
+        selectAllCheckbox.addEventListener("change", function () {
+            seatCheckboxes.forEach(checkbox => checkbox.checked = selectAllCheckbox.checked);
+        });
+
+        // Bulk Delete Functionality
+        document.getElementById("bulkDeleteForm").addEventListener("submit", function (e) {
+            let selectedSeats = Array.from(document.querySelectorAll(".select-seat:checked")).map(cb => cb.value);
+
+            if (selectedSeats.length === 0) {
+                alert("No seats selected.");
+                e.preventDefault();
+                return;
+            }
+
+            selectedSeats.forEach(id => {
+                let input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "selectedSeats";
+                input.value = id;
+                this.appendChild(input);
+            });
+        });
+
+        // Edit Functionality (Now Works ✅)
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", function () {
+                let seatId = this.dataset.id;
+                let seatNumber = document.querySelector(`input[name='SeatNumber'][data-id='${seatId}']`).value;
+                let movieId = document.querySelector(`select[name='MovieId'][data-id='${seatId}']`).value;
+                let isBooked = document.querySelector(`input[name='IsBooked'][data-id='${seatId}']`).checked;
+
+                let form = document.createElement("form");
+                form.method = "post";
+                form.action = "/Admin/Seat/Edit";
+
+                let idInput = document.createElement("input");
+                idInput.type = "hidden";
+                idInput.name = "Id";
+                idInput.value = seatId;
+
+                let seatInput = document.createElement("input");
+                seatInput.type = "hidden";
+                seatInput.name = "SeatNumber";
+                seatInput.value = seatNumber;
+
+                let movieInput = document.createElement("input");
+                movieInput.type = "hidden";
+                movieInput.name = "MovieId";
+                movieInput.value = movieId;
+
+                let bookedInput = document.createElement("input");
+                bookedInput.type = "hidden";
+                bookedInput.name = "IsBooked";
+                bookedInput.value = isBooked;
+
+                form.appendChild(idInput);
+                form.appendChild(seatInput);
+                form.appendChild(movieInput);
+                form.appendChild(bookedInput);
+
+                document.body.appendChild(form);
+                form.submit();
+            });
+        });
+    });
+</script>
