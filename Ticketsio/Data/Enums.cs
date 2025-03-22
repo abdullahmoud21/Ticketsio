@@ -8,6 +8,7 @@
     }
     public enum TicketStatus
     {
+        Pending,
         Paid,
         Canceled,
         Refunded

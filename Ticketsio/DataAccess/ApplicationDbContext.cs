@@ -32,6 +32,7 @@ namespace Ticketsio.DataAccess
             modelBuilder.Entity<Ticket>().HasOne(e => e.User).WithMany().HasForeignKey(e => e.UserId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Ticket>().HasOne(e => e.Cinema).WithMany().HasForeignKey(e => e.CinemaId).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Ticket>().HasOne(e => e.Movie).WithMany().HasForeignKey(e => e.MovieId).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Seat>().HasOne(s => s.Ticket).WithMany(t => t.Seats).HasForeignKey(s => s.TicketId).OnDelete(DeleteBehavior.NoAction);
         }
         public DbSet<Ticketsio.Models.ViewModels.RegisterVM> RegisterVM { get; set; } = default!;
         public DbSet<Ticketsio.Models.ViewModels.LoginVM> LoginVM { get; set; } = default!;

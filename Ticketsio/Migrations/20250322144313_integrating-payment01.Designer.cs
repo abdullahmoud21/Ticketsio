@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ticketsio.DataAccess;
 
@@ -11,9 +12,11 @@ using Ticketsio.DataAccess;
 namespace Ticketsio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250322144313_integrating-payment01")]
+    partial class integratingpayment01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,9 +181,6 @@ namespace Ticketsio.Migrations
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ShowTime")
-                        .HasColumnType("datetime2");
-
                     b.Property<int>("TicketStatus")
                         .HasColumnType("int");
 
@@ -196,6 +196,9 @@ namespace Ticketsio.Migrations
                     b.HasIndex("CinemaId");
 
                     b.HasIndex("MovieId");
+
+                    b.HasIndex("SeatId")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -453,14 +456,9 @@ namespace Ticketsio.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("TicketId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("MovieId");
-
-                    b.HasIndex("TicketId");
 
                     b.ToTable("Seats");
                 });
@@ -588,6 +586,12 @@ namespace Ticketsio.Migrations
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Restrict);
 
+                    b.HasOne("Ticketsio.Models.Seat", "Seat")
+                        .WithOne()
+                        .HasForeignKey("Ticket", "SeatId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("Ticketsio.Models.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -597,6 +601,8 @@ namespace Ticketsio.Migrations
                     b.Navigation("Cinema");
 
                     b.Navigation("Movie");
+
+                    b.Navigation("Seat");
 
                     b.Navigation("User");
                 });
@@ -651,19 +657,7 @@ namespace Ticketsio.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Ticket", "Ticket")
-                        .WithMany("Seats")
-                        .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.Navigation("Movie");
-
-                    b.Navigation("Ticket");
-                });
-
-            modelBuilder.Entity("Ticket", b =>
-                {
-                    b.Navigation("Seats");
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Actors", b =>
