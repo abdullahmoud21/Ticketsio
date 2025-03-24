@@ -26,7 +26,7 @@
                     {
                         <div class="seat @(seat.IsBooked ? "booked" : "available")" data-seat-id="@seat.Id" onclick="toggleSeat(this)">
                             @seat.SeatNumber
-                            <input type="checkbox" name="SelectedSeats" value="@seat.Id" hidden />
+                            <input type="checkbox" name="SelectedSeatsList" value="@seat.Id" hidden />
                         </div>
                     }
                 </div>

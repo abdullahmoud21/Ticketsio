@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Ticketsio.DataAccess;
 
@@ -11,9 +12,11 @@ using Ticketsio.DataAccess;
 namespace Ticketsio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323150122_editinticketmodel")]
+    partial class editinticketmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -172,13 +175,11 @@ namespace Ticketsio.Migrations
                     b.Property<int?>("MovieId")
                         .HasColumnType("int");
 
-                    b.Property<string>("PaymentStripeId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<string>("SessionId")
+                    b.Property<string>("SeatId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("ShowTime")
@@ -186,6 +187,9 @@ namespace Ticketsio.Migrations
 
                     b.Property<int>("TicketStatus")
                         .HasColumnType("int");
+
+                    b.Property<string>("TransactionId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -453,40 +457,16 @@ namespace Ticketsio.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("TicketId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("Seats");
-                });
-
-            modelBuilder.Entity("Ticketsio.Models.TicketSeats", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
-                    b.Property<int>("SeatId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TicketId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SeatId");
-
                     b.HasIndex("TicketId");
 
-                    b.ToTable("TicketSeats");
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Ticketsio.Models.ViewModels.LoginVM", b =>
@@ -675,31 +655,19 @@ namespace Ticketsio.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Movie");
-                });
-
-            modelBuilder.Entity("Ticketsio.Models.TicketSeats", b =>
-                {
-                    b.HasOne("Ticketsio.Models.Seat", "Seat")
-                        .WithMany("TicketSeats")
-                        .HasForeignKey("SeatId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("Ticket", "Ticket")
-                        .WithMany("TicketSeats")
+                        .WithMany("Seats")
                         .HasForeignKey("TicketId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.Navigation("Seat");
+                    b.Navigation("Movie");
 
                     b.Navigation("Ticket");
                 });
 
             modelBuilder.Entity("Ticket", b =>
                 {
-                    b.Navigation("TicketSeats");
+                    b.Navigation("Seats");
                 });
 
             modelBuilder.Entity("Ticketsio.Models.Actors", b =>
@@ -722,11 +690,6 @@ namespace Ticketsio.Migrations
             modelBuilder.Entity("Ticketsio.Models.Movie", b =>
                 {
                     b.Navigation("ActorMovies");
-                });
-
-            modelBuilder.Entity("Ticketsio.Models.Seat", b =>
-                {
-                    b.Navigation("TicketSeats");
                 });
 #pragma warning restore 612, 618
         }

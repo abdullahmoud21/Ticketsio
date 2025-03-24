@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Ticketsio.DataAccess;
 using Ticketsio.Models;
 using Ticketsio.Repository;
@@ -29,6 +30,11 @@ namespace Ticketsio
             builder.Services.AddScoped<ITicketRepository, TicketRepository>();
             builder.Services.AddScoped<ISeatRepository, SeatRepository>();
             builder.Services.AddScoped<IEmailSender, EmailSender>();
+            builder.Services.AddScoped<ITicketSeatsRepository, TicketSeatsRepository>();
+
+
+            builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
             var app = builder.Build();
             
             // Configure the HTTP request pipeline.

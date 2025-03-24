@@ -17,15 +17,13 @@ public class Ticket
     [ValidateNever]
     public ApplicationUser User { get; set; }
     public DateTime ShowTime { get; set; }
-    public int SeatId { get; set; }
-    [ValidateNever]
-    public ICollection<Seat> Seats { get; set; } = new List<Seat>();
+    public ICollection<TicketSeats> TicketSeats { get; set; } = new List<TicketSeats>();
 
     public double Price { get; set; }
-    public DateTime BookingDate { get; set; } = DateTime.Now;
+    public DateTime BookingDate { get; set; }
 
     [ValidateNever]
     public TicketStatus TicketStatus { get; set; }
-
-    public string? TransactionId { get; set; }
+    public string? SessionId { get; set; }
+    public string? PaymentStripeId { get; set; }
 }
