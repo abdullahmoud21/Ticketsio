@@ -12,9 +12,9 @@ using Ticketsio.Repository.IRepositories;
 namespace Ticketsio.Areas.Customer.Controllers
 {
     [Area("Customer")]
-    public class TicketController: Controller
+    public class TicketController : Controller
     {
-       private readonly ITicketRepository _ticketRepository;
+        private readonly ITicketRepository _ticketRepository;
         private readonly IMovieRepository _movieRepository;
         private readonly ISeatRepository _seatRepository;
         private readonly ITicketSeatsRepository _ticketSeatsRepository;
@@ -32,7 +32,7 @@ namespace Ticketsio.Areas.Customer.Controllers
         public IActionResult BookSeats(int MovieId)
         {
             var movie = _movieRepository.GetOne(e => e.Id == MovieId);
-            var Seats = _seatRepository.Get(e => e.MovieId == MovieId,includes: new Expression<Func<Seat, object>>[] { e => e.Movie} );
+            var Seats = _seatRepository.Get(e => e.MovieId == MovieId, includes: new Expression<Func<Seat, object>>[] { e => e.Movie });
             ViewData["Seats"] = Seats.ToList();
             ViewData["Movie"] = movie;
             return View();
@@ -48,10 +48,10 @@ namespace Ticketsio.Areas.Customer.Controllers
             if (movie == null)
                 return NotFound("Movie not found.");
 
-            var selectedSeatIds = SelectedSeatsList.First().Split(',').Select(s => s.Trim()) .Where(s => int.TryParse(s, out _)).Select(int.Parse).ToList();
+            var selectedSeatIds = SelectedSeatsList.First().Split(',').Select(s => s.Trim()).Where(s => int.TryParse(s, out _)).Select(int.Parse).ToList();
 
             var seats = _seatRepository.Get(e => selectedSeatIds.Contains(e.Id)).ToList();
-            
+
             var ticket = new Ticket
             {
                 MovieId = MovieId,
@@ -64,7 +64,7 @@ namespace Ticketsio.Areas.Customer.Controllers
                 TicketSeats = new List<TicketSeats>()
             };
 
-            
+
             foreach (var seat in seats)
             {
                 if (seat.IsBooked)
@@ -93,8 +93,8 @@ namespace Ticketsio.Areas.Customer.Controllers
 
         public IActionResult Pay(int ticketid)
         {
-            var ticket = _ticketSeatsRepository.Get(e =>  e.TicketId == ticketid , includes: new Expression<Func<TicketSeats, object>>[] { e => e.Seat, e => e.Ticket, e => e.Ticket.Movie }).ToList();
-           var tickets = _ticketRepository.GetOne(e => e.Id == ticketid, includes: new Expression<Func<Ticket, object>>[] { e => e.Movie, e => e.User });
+            var ticket = _ticketSeatsRepository.Get(e => e.TicketId == ticketid, includes: new Expression<Func<TicketSeats, object>>[] { e => e.Seat, e => e.Ticket, e => e.Ticket.Movie }).ToList();
+            var tickets = _ticketRepository.GetOne(e => e.Id == ticketid, includes: new Expression<Func<Ticket, object>>[] { e => e.Movie, e => e.User });
 
 
             var options = new Stripe.Checkout.SessionCreateOptions
@@ -131,6 +131,14 @@ namespace Ticketsio.Areas.Customer.Controllers
             _ticketRepository.Commit();
 
             return Redirect(session.Url);
+        }
+        public IActionResult ShowTicket()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var tickets = _ticketRepository.Get(e => e.UserId == userId, includes: new Expression<Func<Ticket, object>>[] { e => e.Movie, e => e.TicketSeats, e => e.Cinema});
+            var ticketseats = _ticketSeatsRepository.Get(e => e.Ticket.UserId == userId, includes: new Expression<Func<TicketSeats, object>>[] { e => e.Seat, e => e.Ticket, e => e.Ticket.Movie , e => e.Ticket.Cinema }).ToList();
+          ViewBag.TicketSeats = ticketseats;
+            return View(tickets.ToList());
         }
     }
 }

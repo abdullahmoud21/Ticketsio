@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Ticket>
+
+@{
+    ViewData["Title"] = "My Tickets";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">My Tickets</h2>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="row">
+            @foreach (var ticket in ViewBag.TicketSeats)
+            {
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">@ticket.Ticket.Movie.Name</h5>
+                            <p class="card-text"><strong>Cinema:</strong> @ticket.Ticket.Cinema.Name</p>
+                            <p class="card-text"><strong>Showtime:</strong> @ticket.Ticket.ShowTime.ToString("f")</p>
+
+                            <p class="card-text">
+                                <strong>Seat:</strong>
+                                @ticket.Seat.SeatNumber
+                            </p>
+                            <p class="card-text">
+                                <strong>Status:</strong>
+                                @ticket.Ticket.TicketStatus
+                            </p>
+                            <p class="card-text"><strong>Price:</strong> $@ticket.Ticket.Price</p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="text-center">You haven't booked any tickets yet.</p>
+    }
+</div>
