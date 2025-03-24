@@ -8,7 +8,7 @@ using Stripe.Checkout;
 using Stripe;
 using System.Linq.Expressions;
 
-namespace Ticketsio.Areas.Customer
+namespace Ticketsio.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class CheckOutController : Controller
@@ -47,8 +47,8 @@ namespace Ticketsio.Areas.Customer
 
                 try
                 {
-                    var service = new Stripe.Checkout.SessionService();
-                    Stripe.Checkout.Session session = service.Get(ticket.SessionId);
+                    var service = new SessionService();
+                    Session session = service.Get(ticket.SessionId);
 
                     if (session == null || string.IsNullOrEmpty(session.PaymentIntentId))
                     {
